@@ -50,7 +50,7 @@ void log_set_stream(FILE *stream)
  * Function    : log_get_stream                                              *
  *                                                                           *
  * Description : Gets the current output stream.                             *
- * Output      : Current output stream file pointer                          *
+ * Output      : Current output stream file pointer.                         *
  * ------------------------------------------------------------------------- */
 FILE *log_get_stream()
 {
@@ -72,7 +72,7 @@ void log_set_format(int format)
  * Function    : log_get_format                                              *
  *                                                                           *
  * Description : Gets the current logging format.                            *
- * Output      : Current logging format flags                                *
+ * Output      : Current logging format flags.                               *
  * ------------------------------------------------------------------------- */
 int log_get_format()
 {
@@ -94,7 +94,7 @@ void log_set_level(int level)
  * Function    : log_get_level                                               *
  *                                                                           *
  * Description : Gets the current logging severity level.                    *
- * Output      : Current logging severity level                              *
+ * Output      : Current logging severity level.                             *
  * ------------------------------------------------------------------------- */
 int log_get_level()
 {
@@ -109,6 +109,7 @@ int log_get_level()
  *               stream. If an output stream was not defined, "stderr"       *
  *               will be set and used instead. Logging a fatal message       *
  *               terminates the program.                                     *
+ *                                                                           *
  * Input       : file  - File name                                           *
  *               line  - Line number                                         *
  *               level - Severity level of the call                          *

@@ -1,3 +1,9 @@
+#
+#  Makefile
+#
+#  Copyright (c) 2014 Daniel Rocha. All rights reserved.
+#
+
 CC=gcc
 RM=rm
 CFLAGS=-Wall -Wextra

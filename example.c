@@ -1,3 +1,9 @@
+/*
+ *  example.c
+ *
+ *  Copyright (c) 2014 Daniel Rocha. All rights reserved.
+ */
+
 #include <stdio.h>
 #include "logger.h"
 

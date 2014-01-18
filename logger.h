@@ -29,12 +29,23 @@
 /* ------------------------------------------------------------------------- *
  *                                   MACROS                                  *
  * ------------------------------------------------------------------------- */
-#define LOG_TRACE(msg)  log_print(__FILE__, __LINE__, LOG_LEVEL_TRACE, (msg))
-#define LOG_DEBUG(msg)  log_print(__FILE__, __LINE__, LOG_LEVEL_DEBUG, (msg))
-#define LOG_INFO(msg)   log_print(__FILE__, __LINE__, LOG_LEVEL_INFO , (msg))
-#define LOG_WARN(msg)   log_print(__FILE__, __LINE__, LOG_LEVEL_WARN , (msg))
-#define LOG_ERROR(msg)  log_print(__FILE__, __LINE__, LOG_LEVEL_ERROR, (msg))
-#define LOG_FATAL(msg)  log_print(__FILE__, __LINE__, LOG_LEVEL_FATAL, (msg))
+#define log_trace(msg, args...) \
+        log_print(__FILE__, __LINE__, LOG_LEVEL_TRACE, msg, ##args)
+
+#define log_debug(msg, args...) \
+        log_print(__FILE__, __LINE__, LOG_LEVEL_DEBUG, msg, ##args)
+
+#define log_info(msg, args...)  \
+        log_print(__FILE__, __LINE__, LOG_LEVEL_INFO , msg, ##args)
+
+#define log_warn(msg, args...)  \
+        log_print(__FILE__, __LINE__, LOG_LEVEL_WARN , msg, ##args)
+
+#define log_error(msg, args...) \
+        log_print(__FILE__, __LINE__, LOG_LEVEL_ERROR, msg, ##args)
+
+#define log_fatal(msg, args...) \
+        log_print(__FILE__, __LINE__, LOG_LEVEL_FATAL, msg, ##args)
 
 /* ------------------------------------------------------------------------- *
  *                                 PROTOTYPES                                *
@@ -48,6 +59,6 @@ int   log_get_format();
 void  log_set_level(int level);
 int   log_get_level();
 
-void  log_print(const char *file, int line, int level, const char *msg);
+void  log_print(const char *file, int line, int level, const char *msg, ...);
 
 #endif

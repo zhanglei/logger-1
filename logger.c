@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <stdarg.h>
 #include "logger.h"
 
 /* ------------------------------------------------------------------------- *
@@ -115,11 +116,12 @@ int log_get_level()
  *               level - Severity level of the call                          *
  *               msg   - Message to be logged                                *
  * ------------------------------------------------------------------------- */
-void log_print(const char *file, int line, int level, const char *msg)
+void log_print(const char *file, int line, int level, const char *msg, ...)
 {
     const char *tag;
     struct tm *now;
     time_t tmp;
+    va_list args;
 
     if (level < logger.level)
         return;
@@ -172,8 +174,15 @@ void log_print(const char *file, int line, int level, const char *msg)
     if (logger.format & LOG_PRINT_TAG)
         fprintf(logger.stream, "- %s ", tag);
 
-    if (logger.format & LOG_PRINT_MSG)
-        fprintf(logger.stream, "- %s ", msg);
+    if (logger.format & LOG_PRINT_MSG) {
+        va_start(args, msg);
+
+        fprintf(logger.stream, "- ");
+        vfprintf(logger.stream, msg, args);
+        fprintf(logger.stream, " ");
+
+        va_end(args);
+    }
 
     fprintf(logger.stream, "\n");
     fflush(logger.stream);

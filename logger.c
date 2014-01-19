@@ -118,7 +118,6 @@ int log_get_level()
  * ------------------------------------------------------------------------- */
 void log_print(const char *file, int line, int level, const char *msg, ...)
 {
-    const char *tag;
     struct tm *now;
     time_t tmp;
     va_list args;
@@ -128,6 +127,55 @@ void log_print(const char *file, int line, int level, const char *msg, ...)
 
     if (logger.stream == NULL)
         logger.stream = stderr;
+
+    time(&tmp);
+    now = localtime(&tmp);
+    now->tm_year += 1900;
+    now->tm_mon += 1;
+
+    fprintf(logger.stream, "--");
+
+    if (logger.format & LOG_PRINT_DATE)
+        fprintf(logger.stream, "- %4d-%02d-%02d ",
+                now->tm_year, now->tm_mon, now->tm_mday);
+
+    if (logger.format & LOG_PRINT_TIME)
+        fprintf(logger.stream, "- %02d:%02d:%02d ",
+                now->tm_hour, now->tm_min, now->tm_sec);
+
+    if (logger.format & LOG_PRINT_FILE)
+        fprintf(logger.stream, "- %s:%d ", file, line);
+
+    if (logger.format & LOG_PRINT_TAG)
+        fprintf(logger.stream, "- %s ", log_tag(level));
+
+    if (logger.format & LOG_PRINT_MSG) {
+        fprintf(logger.stream, "- ");
+
+        va_start(args, msg);
+        vfprintf(logger.stream, msg, args);
+        va_end(args);
+
+        fprintf(logger.stream, " ");
+    }
+
+    fprintf(logger.stream, "\n");
+    fflush(logger.stream);
+
+    if (level == LOG_LEVEL_FATAL)
+        exit(EXIT_FAILURE);
+}
+
+/* ------------------------------------------------------------------------- *
+ * Function    : log_tag                                                     *
+ *                                                                           *
+ * Description : Returns the tag associated to a given severity level.       *
+ * Input       : level - Severity level of the call                          *
+ * Output      : Tag string associated to the input severity level.          *
+ * ------------------------------------------------------------------------- */
+const char *log_tag(int level)
+{
+    const char *tag;
 
     switch (level) {
     case LOG_LEVEL_TRACE:
@@ -153,40 +201,5 @@ void log_print(const char *file, int line, int level, const char *msg, ...)
         break;
     }
 
-    time(&tmp);
-    now = localtime(&tmp);
-    now->tm_year += 1900;
-    now->tm_mon += 1;
-
-    fprintf(logger.stream, "--");
-
-    if (logger.format & LOG_PRINT_DATE)
-        fprintf(logger.stream, "- %4d-%02d-%02d ",
-                now->tm_year, now->tm_mon, now->tm_mday);
-
-    if (logger.format & LOG_PRINT_TIME)
-        fprintf(logger.stream, "- %02d:%02d:%02d ",
-                now->tm_hour, now->tm_min, now->tm_sec);
-
-    if (logger.format & LOG_PRINT_FILE)
-        fprintf(logger.stream, "- %s:%d ", file, line);
-
-    if (logger.format & LOG_PRINT_TAG)
-        fprintf(logger.stream, "- %s ", tag);
-
-    if (logger.format & LOG_PRINT_MSG) {
-        fprintf(logger.stream, "- ");
-
-        va_start(args, msg);
-        vfprintf(logger.stream, msg, args);
-        va_end(args);
-
-        fprintf(logger.stream, " ");
-    }
-
-    fprintf(logger.stream, "\n");
-    fflush(logger.stream);
-
-    if (level == LOG_LEVEL_FATAL)
-        exit(EXIT_FAILURE);
+    return tag;
 }

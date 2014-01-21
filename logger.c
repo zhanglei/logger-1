@@ -34,6 +34,11 @@ static struct {
 } logger = {LOG_LEVEL_ERROR, LOG_PRINT_ALL, NULL};
 
 /* ------------------------------------------------------------------------- *
+ *                                 PROTOTYPES                                *
+ * ------------------------------------------------------------------------- */
+static const char *log_tag(int level);
+
+/* ------------------------------------------------------------------------- *
  *                                 FUNCTIONS                                 *
  * ------------------------------------------------------------------------- */
 /* ------------------------------------------------------------------------- *
@@ -173,7 +178,7 @@ void log_print(const char *file, int line, int level, const char *msg, ...)
  * Input       : level - Severity level of the call                          *
  * Output      : Tag string associated to the input severity level.          *
  * ------------------------------------------------------------------------- */
-const char *log_tag(int level)
+static const char *log_tag(int level)
 {
     const char *tag;
 

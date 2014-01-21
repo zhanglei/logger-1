@@ -61,6 +61,4 @@ int   log_get_level();
 
 void  log_print(const char *file, int line, int level, const char *msg, ...);
 
-const char *log_tag(int level);
-
 #endif

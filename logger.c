@@ -180,31 +180,20 @@ void log_print(const char *file, int line, int level, const char *msg, ...)
  * ------------------------------------------------------------------------- */
 static const char *log_tag(int level)
 {
-    const char *tag;
-
     switch (level) {
     case LOG_LEVEL_TRACE:
-        tag = LOG_TAG_TRACE;
-        break;
+        return LOG_TAG_TRACE;
     case LOG_LEVEL_DEBUG:
-        tag = LOG_TAG_DEBUG;
-        break;
+        return LOG_TAG_DEBUG;
     case LOG_LEVEL_INFO:
-        tag = LOG_TAG_INFO;
-        break;
+        return LOG_TAG_INFO;
     case LOG_LEVEL_WARN:
-        tag = LOG_TAG_WARN;
-        break;
+        return LOG_TAG_WARN;
     case LOG_LEVEL_ERROR:
-        tag = LOG_TAG_ERROR;
-        break;
+        return LOG_TAG_ERROR;
     case LOG_LEVEL_FATAL:
-        tag = LOG_TAG_FATAL;
-        break;
+        return LOG_TAG_FATAL;
     default:
-        tag = LOG_TAG_NULL;
-        break;
+        return LOG_TAG_NULL;
     }
-
-    return tag;
 }

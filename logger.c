@@ -14,17 +14,6 @@
 #include "logger.h"
 
 /* ------------------------------------------------------------------------- *
- *                                 CONSTANTS                                 *
- * ------------------------------------------------------------------------- */
-#define LOG_TAG_TRACE "TRACE"
-#define LOG_TAG_DEBUG "DEBUG"
-#define LOG_TAG_INFO  "INFO "
-#define LOG_TAG_WARN  "WARN "
-#define LOG_TAG_ERROR "ERROR"
-#define LOG_TAG_FATAL "FATAL"
-#define LOG_TAG_NULL  "?????"
-
-/* ------------------------------------------------------------------------- *
  *                              GLOBAL VARIABLES                             *
  * ------------------------------------------------------------------------- */
 static struct {
@@ -182,18 +171,18 @@ static const char *log_tag(int level)
 {
     switch (level) {
     case LOG_LEVEL_TRACE:
-        return LOG_TAG_TRACE;
+        return "TRACE";
     case LOG_LEVEL_DEBUG:
-        return LOG_TAG_DEBUG;
+        return "DEBUG";
     case LOG_LEVEL_INFO:
-        return LOG_TAG_INFO;
+        return "INFO ";
     case LOG_LEVEL_WARN:
-        return LOG_TAG_WARN;
+        return "WARN ";
     case LOG_LEVEL_ERROR:
-        return LOG_TAG_ERROR;
+        return "ERROR";
     case LOG_LEVEL_FATAL:
-        return LOG_TAG_FATAL;
+        return "FATAL";
     default:
-        return LOG_TAG_NULL;
+        return "?????";
     }
 }

@@ -157,6 +157,7 @@ void log_print(const char *file, int line, int level, const char *msg, ...)
 
     if (level == LOG_LEVEL_FATAL) {
         fflush(logger.stream);
+        fclose(logger.stream);
         exit(EXIT_FAILURE);
     }
 }

@@ -150,13 +150,10 @@ void log_print(const char *file, int line, int level, ...)
     if (logger.format & LOG_PRINT_TAG)
         fprintf(logger.stream, "- %s ", log_tag(level));
 
-    if (logger.format & LOG_PRINT_MSG) {
-        fprintf(logger.stream, "- ");
-
-        va_start(msg, level);
-        vfprintf(logger.stream, va_arg(msg, const char*), msg);
-        va_end(msg);
-    }
+    fprintf(logger.stream, "- ");
+    va_start(msg, level);
+    vfprintf(logger.stream, va_arg(msg, const char*), msg);
+    va_end(msg);
 
     fprintf(logger.stream, "\n");
 

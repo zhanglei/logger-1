@@ -24,8 +24,8 @@
 #define LOG_PRINT_TIME  0x02
 #define LOG_PRINT_FILE  0x04
 #define LOG_PRINT_TAG   0x08
-#define LOG_PRINT_MSG   0x10
-#define LOG_PRINT_ALL   0x1f
+#define LOG_PRINT_ALL   0x0f
+#define LOG_PRINT_NONE  0x00
 
 /* -------------------------------------------------------------------------- *
  *                                   MACROS                                   *

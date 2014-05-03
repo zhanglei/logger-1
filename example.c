@@ -10,7 +10,7 @@
 int main()
 {
     log_set_level(LOG_LEVEL_DEBUG);
-    log_set_format(LOG_PRINT_ALL);
+    log_set_format(LOG_PRINT_TAG | LOG_PRINT_DATE | LOG_PRINT_TIME);
 
     log_debug("Starting.");
     log_trace("Passed here!");

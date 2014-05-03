@@ -121,7 +121,7 @@ void log_print(const char *file, int line, int level, ...)
 {
     struct tm *now;
     time_t tmp;
-    va_list msgs;
+    va_list msg;
 
     if (level < logger.level)
         return;
@@ -153,9 +153,9 @@ void log_print(const char *file, int line, int level, ...)
     if (logger.format & LOG_PRINT_MSG) {
         fprintf(logger.stream, "- ");
 
-        va_start(msgs, level);
-        vfprintf(logger.stream, va_arg(msgs, const char*), msgs);
-        va_end(msgs);
+        va_start(msg, level);
+        vfprintf(logger.stream, va_arg(msg, const char*), msg);
+        va_end(msg);
     }
 
     fprintf(logger.stream, "\n");

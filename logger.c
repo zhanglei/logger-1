@@ -8,10 +8,10 @@
  *                               INCLUDED FILES                               *
  * -------------------------------------------------------------------------- */
 
-#include <stdio.h>  /* fprintf()    */
-#include <stdlib.h> /* exit()       */
-#include <time.h>   /* time(), ...  */
-#include <stdarg.h> /* va_list, ... */
+#include <stdio.h>   /* fprintf()    */
+#include <stdlib.h>  /* exit()       */
+#include <time.h>    /* time(), ...  */
+#include <stdarg.h>  /* va_list, ... */
 #include "logger.h"
 
 /* -------------------------------------------------------------------------- *

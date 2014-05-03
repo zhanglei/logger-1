@@ -7,9 +7,10 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
-/* ------------------------------------------------------------------------- *
- *                                 CONSTANTS                                 *
- * ------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------- *
+ *                                 CONSTANTS                                  *
+ * -------------------------------------------------------------------------- */
+
 #define LOG_LEVEL_ALL   0
 #define LOG_LEVEL_TRACE 1
 #define LOG_LEVEL_DEBUG 2
@@ -26,39 +27,41 @@
 #define LOG_PRINT_MSG   0x10
 #define LOG_PRINT_ALL   0x1f
 
-/* ------------------------------------------------------------------------- *
- *                                   MACROS                                  *
- * ------------------------------------------------------------------------- */
-#define log_trace(msg, args...) \
-        log_print(__FILE__, __LINE__, LOG_LEVEL_TRACE, msg, ##args)
+/* -------------------------------------------------------------------------- *
+ *                                   MACROS                                   *
+ * -------------------------------------------------------------------------- */
 
-#define log_debug(msg, args...) \
-        log_print(__FILE__, __LINE__, LOG_LEVEL_DEBUG, msg, ##args)
+#define log_trace(...) \
+        log_print(__FILE__, __LINE__, LOG_LEVEL_TRACE, __VA_ARGS__)
 
-#define log_info(msg, args...)  \
-        log_print(__FILE__, __LINE__, LOG_LEVEL_INFO , msg, ##args)
+#define log_debug(...) \
+        log_print(__FILE__, __LINE__, LOG_LEVEL_DEBUG, __VA_ARGS__)
 
-#define log_warn(msg, args...)  \
-        log_print(__FILE__, __LINE__, LOG_LEVEL_WARN , msg, ##args)
+#define log_info(...)  \
+        log_print(__FILE__, __LINE__, LOG_LEVEL_INFO , __VA_ARGS__)
 
-#define log_error(msg, args...) \
-        log_print(__FILE__, __LINE__, LOG_LEVEL_ERROR, msg, ##args)
+#define log_warn(...)  \
+        log_print(__FILE__, __LINE__, LOG_LEVEL_WARN , __VA_ARGS__)
 
-#define log_fatal(msg, args...) \
-        log_print(__FILE__, __LINE__, LOG_LEVEL_FATAL, msg, ##args)
+#define log_error(...) \
+        log_print(__FILE__, __LINE__, LOG_LEVEL_ERROR, __VA_ARGS__)
 
-/* ------------------------------------------------------------------------- *
- *                                 PROTOTYPES                                *
- * ------------------------------------------------------------------------- */
+#define log_fatal(...) \
+        log_print(__FILE__, __LINE__, LOG_LEVEL_FATAL, __VA_ARGS__)
+
+/* -------------------------------------------------------------------------- *
+ *                                 PROTOTYPES                                 *
+ * -------------------------------------------------------------------------- */
+
 void  log_set_stream(FILE *stream);
-FILE *log_get_stream();
+FILE *log_get_stream(void);
 
 void  log_set_format(int format);
-int   log_get_format();
+int   log_get_format(void);
 
 void  log_set_level(int level);
-int   log_get_level();
+int   log_get_level(void);
 
-void  log_print(const char *file, int line, int level, const char *msg, ...);
+void  log_print(const char *file, int line, int level, ...);
 
 #endif

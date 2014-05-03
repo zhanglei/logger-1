@@ -6,7 +6,7 @@
 
 CC=gcc
 RM=rm
-CFLAGS=-Wall -Wextra
+CFLAGS=-Wall -pedantic -std=iso9899:1999 -Wextra -Wshadow -Wpointer-arith -Wcast-qual -Wcast-align -Wstrict-prototypes -Wmissing-prototypes -Wconversion
 SOURCES=example.c logger.c
 OBJECTS=$(SOURCES:.c=.o)
 EXECUTABLE=example

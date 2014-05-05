@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include "logger.h"
 
-int main()
+int main(void)
 {
     log_set_level(LOG_LEVEL_DEBUG);
     log_set_format(LOG_PRINT_TAG | LOG_PRINT_DATE | LOG_PRINT_TIME);

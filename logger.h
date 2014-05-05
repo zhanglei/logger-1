@@ -53,39 +53,25 @@
  *                                 PROTOTYPES                                 *
  * -------------------------------------------------------------------------- */
 
-/**
- * Sets where to log the messages.
- */
+/** Sets where to log the messages. */
 void log_set_stream(FILE *stream);
 
-/**
- * Gets the current FILE pointer where the messages are logged.
- */
+/**  Gets the current FILE pointer where the messages are logged. */
 FILE *log_get_stream(void);
 
-/**
- * Sets the message format flags.
- */
+/** Sets the message format flags. */
 void log_set_format(int format);
 
-/**
- * Gets the current format flags.
- */
+/** Gets the current format flags. */
 int log_get_format(void);
 
-/**
- * Sets the logging level.
- */
+/** Sets the logging level. */
 void log_set_level(int level);
 
-/**
- * Gets current logging level.
- */
+/** Gets current logging level. */
 int log_get_level(void);
 
-/**
- * Logs a message.
- */
+/** Logs a message. */
 void log_print(const char *file, int line, int level, ...);
 
 #endif

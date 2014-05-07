@@ -35,12 +35,9 @@ static const char *log_tag(int level);
  * -------------------------------------------------------------------------- */
 
 /**
- * log_set_stream - Sets the default stream to output the logs.
+ * Sets the output stream where the logs are written.
  *
- * Parameters:
- *     stream : File pointer
- *
- * Returns: Nothing.
+ * @param stream - File pointer to the logging stream
  */
 void log_set_stream(FILE *stream)
 {
@@ -48,9 +45,9 @@ void log_set_stream(FILE *stream)
 }
 
 /**
- * log_get_stream - Gets the current output stream.
+ * Gets the current output stream.
  *
- * Returns: Current output stream file pointer.
+ * @return Current output stream file pointer.
  */
 FILE *log_get_stream(void)
 {
@@ -58,12 +55,9 @@ FILE *log_get_stream(void)
 }
 
 /**
- * log_set_format - Sets the logging format.
+ * Sets the logging format.
  *
- * Parameters:
- *     format : Logging format flags
- *
- * Returns: Nothing.
+ * @param format - Logging format flags
  */
 void log_set_format(int format)
 {
@@ -71,9 +65,9 @@ void log_set_format(int format)
 }
 
 /**
- * log_get_format - Gets the current logging format.
+ * Gets the current logging format.
  *
- * Returns: Current logging format flags.
+ * @return Current logging format flags.
  */
 int log_get_format(void)
 {
@@ -81,12 +75,9 @@ int log_get_format(void)
 }
 
 /**
- * log_set_level - Sets the logging severity level.
+ * Sets the logging severity level.
  *
- * Parameters:
- *     level : Logging severity level
- *
- * Returns: Nothing.
+ * @param level - Logging severity level
  */
 void log_set_level(int level)
 {
@@ -94,9 +85,9 @@ void log_set_level(int level)
 }
 
 /**
- * log_get_level - Gets the current logging severity level.
+ * Gets the current logging severity level.
  *
- * Returns: Current logging severity level.
+ * @return Current logging severity level.
  */
 int log_get_level(void)
 {
@@ -104,18 +95,15 @@ int log_get_level(void)
 }
 
 /**
- * log_print - If the severity level of the call is higher than the logger's
- *     level, prints the log message to the output stream. If an output stream
- *     was not defined, "stderr" will be set and used instead. Logging a fatal
- *     message terminates the program.
+ * If the severity level of the call is higher than the logger's level, prints
+ * the log message to the output stream. If an output stream was not defined,
+ * "stderr" will be set and used instead. Logging a fatal message terminates
+ * the program.
  *
- * Parameters:
- *     file  : File name
- *     line  : Line number
- *     level : Severity level of the call
- *     ...   : Message to be logged and its arguments
- *
- * Returns: Nothing.
+ * @param file  - File name
+ * @param line  - Line number
+ * @param level - Severity level of the call
+ * @param ...   - Message to be logged and its arguments
  */
 void log_print(const char *file, int line, int level, ...)
 {
@@ -164,12 +152,10 @@ void log_print(const char *file, int line, int level, ...)
 }
 
 /**
- * log_tag - Returns the tag associated to a given severity level.
+ * Returns the tag associated to a given severity level.
  *
- * Parameters:
- *     level : Severity level of the call
- *
- * Returns: A tag string associated to the input severity level.
+ * @param level - Severity level of the call
+ * @return A tag string associated to the input severity level.
  */
 static const char *log_tag(int level)
 {

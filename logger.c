@@ -122,23 +122,20 @@ void log_print(const char *file, int line, int level, ...)
     now->tm_year += 1900;
     now->tm_mon += 1;
 
-    fprintf(logger.stream, "-");
-
     if (logger.format & LOG_PRINT_DATE)
-        fprintf(logger.stream, "- %4d-%02d-%02d ",
+        fprintf(logger.stream, "%04d-%02d-%02d - ",
                 now->tm_year, now->tm_mon, now->tm_mday);
 
     if (logger.format & LOG_PRINT_TIME)
-        fprintf(logger.stream, "- %02d:%02d:%02d ",
+        fprintf(logger.stream, "%02d:%02d:%02d - ",
                 now->tm_hour, now->tm_min, now->tm_sec);
 
     if (logger.format & LOG_PRINT_FILE)
-        fprintf(logger.stream, "- %s:%d ", file, line);
+        fprintf(logger.stream, "%s:%d - ", file, line);
 
     if (logger.format & LOG_PRINT_TAG)
-        fprintf(logger.stream, "- %s ", log_tag(level));
+        fprintf(logger.stream, "%s - ", log_tag(level));
 
-    fprintf(logger.stream, "- ");
     va_start(msg, level);
     vfprintf(logger.stream, va_arg(msg, const char*), msg);
     va_end(msg);

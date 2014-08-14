@@ -108,7 +108,7 @@ int log_get_level(void)
 void log_print(const char *file, int line, int level, ...)
 {
     struct tm *now;
-    time_t tmp;
+    time_t secs;
     va_list msg;
 
     if (level < logger.level)
@@ -117,8 +117,8 @@ void log_print(const char *file, int line, int level, ...)
     if (logger.stream == NULL)
         logger.stream = stderr;
 
-    time(&tmp);
-    now = localtime(&tmp);
+    time(&secs);
+    now = localtime(&secs);
     now->tm_year += 1900;
     now->tm_mon += 1;
 

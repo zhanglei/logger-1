@@ -107,7 +107,7 @@ int log_get_level(void)
  */
 void log_print(const char *file, int line, int level, ...)
 {
-    struct tm *now;
+    struct tm now;
     time_t secs;
     va_list msg;
 
@@ -118,17 +118,19 @@ void log_print(const char *file, int line, int level, ...)
         logger.stream = stderr;
 
     time(&secs);
-    now = localtime(&secs);
-    now->tm_year += 1900;
-    now->tm_mon += 1;
+#ifdef WINDOWS
+    localtime_s(&now, &secs);
+#else
+    localtime_r(&secs, &now);
+#endif
 
     if (logger.format & LOG_PRINT_DATE)
         fprintf(logger.stream, "%04d-%02d-%02d - ",
-                now->tm_year, now->tm_mon, now->tm_mday);
+                now.tm_year + 1900, now.tm_mon + 1, now.tm_mday);
 
     if (logger.format & LOG_PRINT_TIME)
         fprintf(logger.stream, "%02d:%02d:%02d - ",
-                now->tm_hour, now->tm_min, now->tm_sec);
+                now.tm_hour, now.tm_min, now.tm_sec);
 
     if (logger.format & LOG_PRINT_FILE)
         fprintf(logger.stream, "%s:%d - ", file, line);

@@ -97,7 +97,7 @@ int log_get_level(void)
 /**
  * If the severity level of the call is higher than the logger's level, prints
  * the log message to the output stream. If an output stream was not defined,
- * "stderr" will be set and used instead. Logging a fatal message terminates
+ * "stdout" will be set and used instead. Logging a fatal message terminates
  * the program.
  *
  * @param file  - File name
@@ -107,15 +107,16 @@ int log_get_level(void)
  */
 void log_print(const char *file, int line, int level, ...)
 {
-    struct tm now;
+    FILE *stream = logger.stream;
     time_t secs;
+    struct tm now;
     va_list msg;
 
     if (level < logger.level)
         return;
 
-    if (logger.stream == NULL)
-        logger.stream = stderr;
+    if (stream == NULL)
+        stream = stdout;
 
     time(&secs);
 #ifdef WINDOWS
@@ -125,27 +126,27 @@ void log_print(const char *file, int line, int level, ...)
 #endif
 
     if (logger.format & LOG_PRINT_DATE)
-        fprintf(logger.stream, "%04d-%02d-%02d - ",
+        fprintf(stream, "%04d-%02d-%02d - ",
                 now.tm_year + 1900, now.tm_mon + 1, now.tm_mday);
 
     if (logger.format & LOG_PRINT_TIME)
-        fprintf(logger.stream, "%02d:%02d:%02d - ",
+        fprintf(stream, "%02d:%02d:%02d - ",
                 now.tm_hour, now.tm_min, now.tm_sec);
 
     if (logger.format & LOG_PRINT_FILE)
-        fprintf(logger.stream, "%s:%d - ", file, line);
+        fprintf(stream, "%s:%d - ", file, line);
 
     if (logger.format & LOG_PRINT_TAG)
-        fprintf(logger.stream, "%s - ", log_tag(level));
+        fprintf(stream, "%s - ", log_tag(level));
 
     va_start(msg, level);
-    vfprintf(logger.stream, va_arg(msg, const char*), msg);
+    vfprintf(stream, va_arg(msg, const char*), msg);
     va_end(msg);
 
-    fprintf(logger.stream, "\n");
+    fprintf(stream, "\n");
 
     if (level == LOG_LEVEL_FATAL) {
-        fclose(logger.stream);
+        fclose(stream);
         exit(EXIT_FAILURE);
     }
 }

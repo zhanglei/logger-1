@@ -119,7 +119,7 @@ void log_print(const char *file, int line, int level, ...)
         stream = stdout;
 
     time(&secs);
-#ifdef WINDOWS
+#ifdef _WIN32
     localtime_s(&now, &secs);
 #else
     localtime_r(&secs, &now);

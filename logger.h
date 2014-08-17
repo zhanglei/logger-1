@@ -32,32 +32,32 @@
  * -------------------------------------------------------------------------- */
 
 #define log_trace(...) \
-        log_print(__FILE__, __LINE__, LOG_LEVEL_TRACE, __VA_ARGS__)
+    log_print(__FILE__, __LINE__, LOG_LEVEL_TRACE, __VA_ARGS__)
 
 #define log_debug(...) \
-        log_print(__FILE__, __LINE__, LOG_LEVEL_DEBUG, __VA_ARGS__)
+    log_print(__FILE__, __LINE__, LOG_LEVEL_DEBUG, __VA_ARGS__)
 
 #define log_info(...)  \
-        log_print(__FILE__, __LINE__, LOG_LEVEL_INFO , __VA_ARGS__)
+    log_print(__FILE__, __LINE__, LOG_LEVEL_INFO , __VA_ARGS__)
 
 #define log_warn(...)  \
-        log_print(__FILE__, __LINE__, LOG_LEVEL_WARN , __VA_ARGS__)
+    log_print(__FILE__, __LINE__, LOG_LEVEL_WARN , __VA_ARGS__)
 
 #define log_error(...) \
-        log_print(__FILE__, __LINE__, LOG_LEVEL_ERROR, __VA_ARGS__)
+    log_print(__FILE__, __LINE__, LOG_LEVEL_ERROR, __VA_ARGS__)
 
 #define log_fatal(...) \
-        log_print(__FILE__, __LINE__, LOG_LEVEL_FATAL, __VA_ARGS__)
+    log_print(__FILE__, __LINE__, LOG_LEVEL_FATAL, __VA_ARGS__)
 
 /* -------------------------------------------------------------------------- *
  *                                 PROTOTYPES                                 *
  * -------------------------------------------------------------------------- */
 
-/** Sets where to log the messages. */
-void log_set_stream(FILE *stream);
+/** Sets the output streams where messages will be logged. */
+void log_set_streams(FILE **streams);
 
-/**  Gets the current FILE pointer where the messages are logged. */
-FILE *log_get_stream(void);
+/**  Gets the current output streams. */
+FILE **log_get_streams(void);
 
 /** Sets the message format flags. */
 void log_set_format(int format);
@@ -68,7 +68,7 @@ int log_get_format(void);
 /** Sets the logging level. */
 void log_set_level(int level);
 
-/** Gets current logging level. */
+/** Gets the current logging level. */
 int log_get_level(void);
 
 /** Logs a message. */

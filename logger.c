@@ -21,7 +21,7 @@
 static struct {
     int level;
     int format;
-    FILE *stream;
+    FILE **streams;
 } logger = {LOG_LEVEL_ERROR, LOG_PRINT_ALL, NULL};
 
 /* -------------------------------------------------------------------------- *
@@ -35,23 +35,24 @@ static const char *log_tag(int level);
  * -------------------------------------------------------------------------- */
 
 /**
- * Sets the output stream where the logs are written.
+ * Sets the output streams where the logs are written. A NULL terminated array
+ * is passed as parameter containing a list of FILE pointers.
  *
- * @param stream - File pointer to the logging stream
+ * @param streams - Array of file pointers
  */
-void log_set_stream(FILE *stream)
+void log_set_streams(FILE **streams)
 {
-    logger.stream = stream;
+    logger.streams = streams;
 }
 
 /**
- * Gets the current output stream.
+ * Gets the current array of output streams.
  *
- * @return Current output stream file pointer.
+ * @return Current array of output streams.
  */
-FILE *log_get_stream(void)
+FILE **log_get_streams(void)
 {
-    return logger.stream;
+    return logger.streams;
 }
 
 /**
@@ -97,8 +98,8 @@ int log_get_level(void)
 /**
  * If the severity level of the call is higher than the logger's level, prints
  * the log message to the output stream. If an output stream was not defined,
- * "stdout" will be set and used instead. Logging a fatal message terminates
- * the program.
+ * "stdout" will be used instead. Logging a fatal message terminates the
+ * program.
  *
  * @param file  - File name
  * @param line  - Line number
@@ -107,16 +108,18 @@ int log_get_level(void)
  */
 void log_print(const char *file, int line, int level, ...)
 {
-    FILE *stream = logger.stream;
+    FILE *DEFAULT_STREAMS[2] = {stdout, NULL};
+    FILE **streams = logger.streams;
     time_t secs;
     struct tm now;
     va_list msg;
+    unsigned int i;
 
     if (level < logger.level)
         return;
 
-    if (stream == NULL)
-        stream = stdout;
+    if (streams == NULL)
+        streams = DEFAULT_STREAMS;
 
     time(&secs);
 #ifdef _WIN32
@@ -125,30 +128,33 @@ void log_print(const char *file, int line, int level, ...)
     localtime_r(&secs, &now);
 #endif
 
-    if (logger.format & LOG_PRINT_DATE)
-        fprintf(stream, "%04d-%02d-%02d - ",
-                now.tm_year + 1900, now.tm_mon + 1, now.tm_mday);
+    for (i = 0; streams[i] != NULL; ++i) {
+        if (logger.format & LOG_PRINT_DATE)
+            fprintf(streams[i], "%04d-%02d-%02d - ",
+                    now.tm_year + 1900, now.tm_mon + 1, now.tm_mday);
 
-    if (logger.format & LOG_PRINT_TIME)
-        fprintf(stream, "%02d:%02d:%02d - ",
-                now.tm_hour, now.tm_min, now.tm_sec);
+        if (logger.format & LOG_PRINT_TIME)
+            fprintf(streams[i], "%02d:%02d:%02d - ",
+                    now.tm_hour, now.tm_min, now.tm_sec);
 
-    if (logger.format & LOG_PRINT_FILE)
-        fprintf(stream, "%s:%d - ", file, line);
+        if (logger.format & LOG_PRINT_FILE)
+            fprintf(streams[i], "%s:%d - ", file, line);
 
-    if (logger.format & LOG_PRINT_TAG)
-        fprintf(stream, "%s - ", log_tag(level));
+        if (logger.format & LOG_PRINT_TAG)
+            fprintf(streams[i], "%s - ", log_tag(level));
 
-    va_start(msg, level);
-    vfprintf(stream, va_arg(msg, const char*), msg);
-    va_end(msg);
+        va_start(msg, level);
+        vfprintf(streams[i], va_arg(msg, const char*), msg);
+        va_end(msg);
 
-    fprintf(stream, "\n");
+        fprintf(streams[i], "\n");
 
-    if (level == LOG_LEVEL_FATAL) {
-        fclose(stream);
-        exit(EXIT_FAILURE);
+        if (level == LOG_LEVEL_FATAL)
+            fclose(streams[i]);
     }
+
+    if (level == LOG_LEVEL_FATAL)
+        exit(EXIT_FAILURE);
 }
 
 /**

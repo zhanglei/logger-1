@@ -9,8 +9,16 @@
 
 int main(void)
 {
-    log_set_level(LOG_LEVEL_DEBUG);
+    FILE *logs[4];
+
+    logs[0] = fopen("logs.txt", "w");
+    logs[1] = fopen("logs_copy.txt", "w");
+    logs[2] = stderr;
+    logs[3] = NULL;
+
+    log_set_streams(logs);
     log_set_format(LOG_PRINT_TAG | LOG_PRINT_DATE | LOG_PRINT_TIME);
+    log_set_level(LOG_LEVEL_DEBUG);
 
     log_debug("Starting.");
     log_trace("Passed here!");

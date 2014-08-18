@@ -151,6 +151,8 @@ void log_print(const char *file, int line, int level, ...)
 
         if (level == LOG_LEVEL_FATAL)
             fclose(streams[i]);
+        else
+            fflush(streams[i]);
     }
 
     if (level == LOG_LEVEL_FATAL)

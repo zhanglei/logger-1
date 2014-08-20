@@ -111,7 +111,7 @@ void log_print(const char *file, int line, int level, ...)
     FILE *DEFAULT_STREAMS[2] = {stdout, NULL};
     FILE **streams = logger.streams;
     time_t secs;
-    struct tm now;
+    struct tm *now;
     va_list msg;
     unsigned int i;
 
@@ -122,20 +122,18 @@ void log_print(const char *file, int line, int level, ...)
         streams = DEFAULT_STREAMS;
 
     time(&secs);
-#ifdef _WIN32
-    localtime_s(&now, &secs);
-#else
-    localtime_r(&secs, &now);
-#endif
+    now = localtime_r(&secs);
+    now->tm_mon  += 1;
+    now->tm_year += 1900;
 
     for (i = 0; streams[i] != NULL; ++i) {
         if (logger.format & LOG_PRINT_DATE)
             fprintf(streams[i], "%04d-%02d-%02d - ",
-                    now.tm_year + 1900, now.tm_mon + 1, now.tm_mday);
+                    now->tm_year, now->tm_mon, now->tm_mday);
 
         if (logger.format & LOG_PRINT_TIME)
             fprintf(streams[i], "%02d:%02d:%02d - ",
-                    now.tm_hour, now.tm_min, now.tm_sec);
+                    now->tm_hour, now->tm_min, now->tm_sec);
 
         if (logger.format & LOG_PRINT_FILE)
             fprintf(streams[i], "%s:%d - ", file, line);

@@ -12,6 +12,7 @@
 #include <stdlib.h>  /* exit()       */
 #include <time.h>    /* time(), ...  */
 #include <stdarg.h>  /* va_list, ... */
+#include <pthread.h>
 #include "logger.h"
 
 /* -------------------------------------------------------------------------- *
@@ -19,10 +20,16 @@
  * -------------------------------------------------------------------------- */
 
 static struct {
-    int level;
     int format;
+    int level;
+    pthread_rwlock_t lock;
     FILE **streams;
-} logger = {LOG_LEVEL_INFO, LOG_PRINT_ALL, NULL};
+} logger = {
+    LOG_PRINT_DATE | LOG_PRINT_TIME | LOG_PRINT_TAG,
+    LOG_LEVEL_INFO,
+    PTHREAD_RWLOCK_INITIALIZER,
+    NULL
+};
 
 /* -------------------------------------------------------------------------- *
  *                                 PROTOTYPES                                 *
@@ -42,17 +49,26 @@ static const char *log_tag(int level);
  */
 void log_set_streams(FILE **streams)
 {
+    pthread_rwlock_wrlock(&logger.lock);
     logger.streams = streams;
+    pthread_rwlock_unlock(&logger.lock);
 }
 
 /**
- * Gets the current array of output streams.
+ * Gets the current array of output streams. The result of this function is NOT
+ * thread-safe.
  *
  * @return Current array of output streams.
  */
 FILE **log_get_streams(void)
 {
-    return logger.streams;
+    FILE **streams;
+
+    pthread_rwlock_rdlock(&logger.lock);
+    streams = logger.streams;
+    pthread_rwlock_unlock(&logger.lock);
+
+    return streams;
 }
 
 /**
@@ -62,7 +78,9 @@ FILE **log_get_streams(void)
  */
 void log_set_format(int format)
 {
+    pthread_rwlock_wrlock(&logger.lock);
     logger.format = format;
+    pthread_rwlock_unlock(&logger.lock);
 }
 
 /**
@@ -72,7 +90,13 @@ void log_set_format(int format)
  */
 int log_get_format(void)
 {
-    return logger.format;
+    int format;
+
+    pthread_rwlock_rdlock(&logger.lock);
+    format = logger.format;
+    pthread_rwlock_unlock(&logger.lock);
+
+    return format;
 }
 
 /**
@@ -82,7 +106,9 @@ int log_get_format(void)
  */
 void log_set_level(int level)
 {
+    pthread_rwlock_wrlock(&logger.lock);
     logger.level = level;
+    pthread_rwlock_unlock(&logger.lock);
 }
 
 /**
@@ -92,7 +118,13 @@ void log_set_level(int level)
  */
 int log_get_level(void)
 {
-    return logger.level;
+    int level;
+
+    pthread_rwlock_rdlock(&logger.lock);
+    level = logger.level;
+    pthread_rwlock_unlock(&logger.lock);
+
+    return level;
 }
 
 /**
@@ -109,49 +141,53 @@ int log_get_level(void)
 void log_print(const char *file, int line, int level, ...)
 {
     FILE *DEFAULT_STREAMS[2] = {stdout, NULL};
-    FILE **streams = logger.streams;
+    FILE **streams;
     time_t secs;
-    struct tm *now;
+    struct tm now;
     va_list msg;
     unsigned int i;
 
-    if (level < logger.level)
-        return;
+    pthread_rwlock_rdlock(&logger.lock);
 
-    if (streams == NULL)
-        streams = DEFAULT_STREAMS;
+    if (level >= logger.level) {
+        streams = logger.streams;
+        if (streams == NULL)
+            streams = DEFAULT_STREAMS;
 
-    time(&secs);
-    now = localtime(&secs);
-    now->tm_mon  += 1;
-    now->tm_year += 1900;
+        time(&secs);
+        localtime_r(&secs, &now);
+        now.tm_mon  += 1;
+        now.tm_year += 1900;
 
-    for (i = 0; streams[i] != NULL; ++i) {
-        if (logger.format & LOG_PRINT_DATE)
-            fprintf(streams[i], "%04d-%02d-%02d - ",
-                    now->tm_year, now->tm_mon, now->tm_mday);
+        for (i = 0; streams[i] != NULL; ++i) {
+            if (logger.format & LOG_PRINT_DATE)
+                fprintf(streams[i], "%04d-%02d-%02d - ",
+                        now.tm_year, now.tm_mon, now.tm_mday);
 
-        if (logger.format & LOG_PRINT_TIME)
-            fprintf(streams[i], "%02d:%02d:%02d - ",
-                    now->tm_hour, now->tm_min, now->tm_sec);
+            if (logger.format & LOG_PRINT_TIME)
+                fprintf(streams[i], "%02d:%02d:%02d - ",
+                        now.tm_hour, now.tm_min, now.tm_sec);
 
-        if (logger.format & LOG_PRINT_FILE)
-            fprintf(streams[i], "%s:%d - ", file, line);
+            if (logger.format & LOG_PRINT_FILE)
+                fprintf(streams[i], "%s:%d - ", file, line);
 
-        if (logger.format & LOG_PRINT_TAG)
-            fprintf(streams[i], "%s - ", log_tag(level));
+            if (logger.format & LOG_PRINT_TAG)
+                fprintf(streams[i], "%s - ", log_tag(level));
 
-        va_start(msg, level);
-        vfprintf(streams[i], va_arg(msg, const char*), msg);
-        va_end(msg);
+            va_start(msg, level);
+            vfprintf(streams[i], va_arg(msg, const char*), msg);
+            va_end(msg);
 
-        fprintf(streams[i], "\n");
+            fprintf(streams[i], "\n");
 
-        if (level == LOG_LEVEL_FATAL)
-            fclose(streams[i]);
-        else
-            fflush(streams[i]);
+            if (level == LOG_LEVEL_FATAL)
+                fclose(streams[i]);
+            else
+                fflush(streams[i]);
+        }
     }
+
+    pthread_rwlock_unlock(&logger.lock);
 
     if (level == LOG_LEVEL_FATAL)
         exit(EXIT_FAILURE);

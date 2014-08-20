@@ -22,7 +22,7 @@ static struct {
     int level;
     int format;
     FILE **streams;
-} logger = {LOG_LEVEL_ERROR, LOG_PRINT_ALL, NULL};
+} logger = {LOG_LEVEL_INFO, LOG_PRINT_ALL, NULL};
 
 /* -------------------------------------------------------------------------- *
  *                                 PROTOTYPES                                 *

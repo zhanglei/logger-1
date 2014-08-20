@@ -189,8 +189,10 @@ void log_print(const char *file, int line, int level, ...)
 
     pthread_rwlock_unlock(&logger.lock);
 
-    if (level == LOG_LEVEL_FATAL)
+    if (level == LOG_LEVEL_FATAL) {
+        pthread_rwlock_destroy(&logger.lock);
         exit(EXIT_FAILURE);
+    }
 }
 
 /**

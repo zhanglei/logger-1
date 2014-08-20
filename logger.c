@@ -122,7 +122,7 @@ void log_print(const char *file, int line, int level, ...)
         streams = DEFAULT_STREAMS;
 
     time(&secs);
-    now = localtime_r(&secs);
+    now = localtime(&secs);
     now->tm_mon  += 1;
     now->tm_year += 1900;
 

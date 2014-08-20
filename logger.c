@@ -8,11 +8,11 @@
  *                               INCLUDED FILES                               *
  * -------------------------------------------------------------------------- */
 
-#include <stdio.h>   /* fprintf()    */
-#include <stdlib.h>  /* exit()       */
-#include <time.h>    /* time(), ...  */
-#include <stdarg.h>  /* va_list, ... */
-#include <pthread.h>
+#include <stdio.h>    /* fprintf() */
+#include <stdlib.h>   /* exit()    */
+#include <time.h>     /* time()    */
+#include <stdarg.h>   /* va_list   */
+#include <pthread.h>  /* rwlock    */
 #include "logger.h"
 
 /* -------------------------------------------------------------------------- *

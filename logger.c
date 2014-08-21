@@ -12,7 +12,7 @@
 #include <stdlib.h>   /* exit()    */
 #include <time.h>     /* time()    */
 #include <stdarg.h>   /* va_list   */
-#include <pthread.h>  /* mutex    */
+#include <pthread.h>  /* mutex     */
 #include "logger.h"
 
 /* -------------------------------------------------------------------------- *

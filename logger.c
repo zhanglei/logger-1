@@ -12,7 +12,7 @@
 #include <stdlib.h>   /* exit()    */
 #include <time.h>     /* time()    */
 #include <stdarg.h>   /* va_list   */
-#include <pthread.h>  /* rwlock    */
+#include <pthread.h>  /* mutex    */
 #include "logger.h"
 
 /* -------------------------------------------------------------------------- *
@@ -22,12 +22,12 @@
 static struct {
     int format;
     int level;
-    pthread_rwlock_t lock;
+    pthread_mutex_t lock;
     FILE **streams;
 } logger = {
     LOG_PRINT_DATE | LOG_PRINT_TIME | LOG_PRINT_TAG,
     LOG_LEVEL_INFO,
-    PTHREAD_RWLOCK_INITIALIZER,
+    PTHREAD_MUTEX_INITIALIZER,
     NULL
 };
 
@@ -49,9 +49,9 @@ static const char *log_tag(int level);
  */
 void log_set_streams(FILE **streams)
 {
-    pthread_rwlock_wrlock(&logger.lock);
+    pthread_mutex_lock(&logger.lock);
     logger.streams = streams;
-    pthread_rwlock_unlock(&logger.lock);
+    pthread_mutex_unlock(&logger.lock);
 }
 
 /**
@@ -64,9 +64,9 @@ FILE **log_get_streams(void)
 {
     FILE **streams;
 
-    pthread_rwlock_rdlock(&logger.lock);
+    pthread_mutex_lock(&logger.lock);
     streams = logger.streams;
-    pthread_rwlock_unlock(&logger.lock);
+    pthread_mutex_unlock(&logger.lock);
 
     return streams;
 }
@@ -78,9 +78,9 @@ FILE **log_get_streams(void)
  */
 void log_set_format(int format)
 {
-    pthread_rwlock_wrlock(&logger.lock);
+    pthread_mutex_lock(&logger.lock);
     logger.format = format;
-    pthread_rwlock_unlock(&logger.lock);
+    pthread_mutex_unlock(&logger.lock);
 }
 
 /**
@@ -92,9 +92,9 @@ int log_get_format(void)
 {
     int format;
 
-    pthread_rwlock_rdlock(&logger.lock);
+    pthread_mutex_lock(&logger.lock);
     format = logger.format;
-    pthread_rwlock_unlock(&logger.lock);
+    pthread_mutex_unlock(&logger.lock);
 
     return format;
 }
@@ -106,9 +106,9 @@ int log_get_format(void)
  */
 void log_set_level(int level)
 {
-    pthread_rwlock_wrlock(&logger.lock);
+    pthread_mutex_lock(&logger.lock);
     logger.level = level;
-    pthread_rwlock_unlock(&logger.lock);
+    pthread_mutex_unlock(&logger.lock);
 }
 
 /**
@@ -120,9 +120,9 @@ int log_get_level(void)
 {
     int level;
 
-    pthread_rwlock_rdlock(&logger.lock);
+    pthread_mutex_lock(&logger.lock);
     level = logger.level;
-    pthread_rwlock_unlock(&logger.lock);
+    pthread_mutex_unlock(&logger.lock);
 
     return level;
 }
@@ -147,7 +147,7 @@ void log_print(const char *file, int line, int level, ...)
     va_list msg;
     unsigned int i;
 
-    pthread_rwlock_rdlock(&logger.lock);
+    pthread_mutex_lock(&logger.lock);
 
     if (level >= logger.level) {
         streams = logger.streams;
@@ -187,10 +187,10 @@ void log_print(const char *file, int line, int level, ...)
         }
     }
 
-    pthread_rwlock_unlock(&logger.lock);
+    pthread_mutex_lock(&logger.lock);
 
     if (level == LOG_LEVEL_FATAL) {
-        pthread_rwlock_destroy(&logger.lock);
+        pthread_mutex_destroy(&logger.lock);
         exit(EXIT_FAILURE);
     }
 }

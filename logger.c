@@ -217,6 +217,6 @@ static const char *log_tag(int level)
     case LOG_LEVEL_FATAL:
         return "FATAL";
     default:
-        return "?????";
+        return "     ";
     }
 }

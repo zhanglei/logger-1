@@ -187,7 +187,7 @@ void log_print(const char *file, int line, int level, ...)
         }
     }
 
-    pthread_mutex_lock(&logger.lock);
+    pthread_mutex_unlock(&logger.lock);
 
     if (level == LOG_LEVEL_FATAL) {
         pthread_mutex_destroy(&logger.lock);
